@@ -14,8 +14,17 @@ if ([string]::IsNullOrWhiteSpace($tag)) {
     }
 }
 
-git add .
-git commit -m "release: $tag"
+if (git status --porcelain) {
+    Write-Error "错误: 存在未提交的改动，请先提交后再发布。"
+    git status --short
+    exit 1
+}
+
+if ([int](git rev-list --count '@{u}..HEAD') -gt 0) {
+    Write-Error "错误: 存在未推送的提交，请先执行 git push。"
+    exit 1
+}
+
 git tag "v$tag"
 git push origin main --tags
 

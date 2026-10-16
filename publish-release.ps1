@@ -1,5 +1,6 @@
 $defaultTag = Get-Date -Format "yyyyMMdd"
-$tag = Read-Host "请输入版本号 (默认: $defaultTag)"
+Write-Host "请输入版本号 (默认: $defaultTag): " -NoNewline
+$tag = Read-Host
 
 if ([string]::IsNullOrWhiteSpace($tag)) {
     $tag = $defaultTag

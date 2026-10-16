@@ -1,0 +1,29 @@
+name: release-bin
+
+on:
+  push:
+    tags:
+      - 'v*' # 当本地脚本推送 v* 标签时物理触发
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Create Release and Upload Asset
+        uses: softprops/action-gh-release@v3.0.3
+        with:
+          name: "Release ${{ github.ref_name }}"
+          files: |
+            *.bin
+          generate_release_notes: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

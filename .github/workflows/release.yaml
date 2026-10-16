@@ -24,6 +24,8 @@ jobs:
           name: "Release ${{ github.ref_name }}"
           files: |
             *.bin
+            *.json
           generate_release_notes: false
+          body: ""
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

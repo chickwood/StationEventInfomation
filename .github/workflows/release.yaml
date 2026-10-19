@@ -33,8 +33,7 @@ jobs:
           files=()
           for f in station_data_xyz.bin event_data.json; do
             if [ -f "$f" ]; then
-              sha256sum "$f" > "$f.sha256"
-              files+=("$f" "$f.sha256")
+              files+=("$f")
             else
               echo "::warning::Skipping missing file: $f"
             fi
@@ -44,6 +43,9 @@ jobs:
             echo "::warning::No files to package, skipping zip creation."
             exit 0
           fi
+
+          sha256sum "${files[@]}" > SHA256SUMS
+          files+=("SHA256SUMS")
 
           tmp_zip="$(mktemp -u --suffix=.zip station-event.XXXXXXXX)"
           zip -j "$tmp_zip" "${files[@]}"

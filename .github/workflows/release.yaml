@@ -45,16 +45,16 @@ jobs:
             exit 0
           fi
 
-          tmp_zip="$(mktemp -u --suffix=.zip station-event-info.XXXXXXXX)"
+          tmp_zip="$(mktemp -u --suffix=.zip station-event.XXXXXXXX)"
           zip -j "$tmp_zip" "${files[@]}"
-          mv -f "$tmp_zip" "station-event-info.${date_tag}.zip"
+          mv -f "$tmp_zip" "station-event.${date_tag}.zip"
 
       - name: Create Release and Upload Asset
         uses: softprops/action-gh-release@v3.0.3
         with:
           name: "Release ${{ github.ref_name }}"
           files: |
-            station-event-info.*.zip
+            station-event.*.zip
           generate_release_notes: false
           body: ""
         env:

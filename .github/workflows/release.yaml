@@ -20,6 +20,16 @@ jobs:
 
       - name: Package Files
         run: |
+          tag="${GITHUB_REF_NAME#v}"
+          IFS='.' read -r year month day <<< "$tag"
+
+          if ! [[ "$year" =~ ^[0-9]+$ && "$month" =~ ^[0-9]+$ && "$day" =~ ^[0-9]+$ ]]; then
+            echo "::error::Unexpected tag format: ${GITHUB_REF_NAME} (expected vyyyy.M.d)"
+            exit 1
+          fi
+
+          date_tag="$(printf '%04d%02d%02d' "$((10#$year))" "$((10#$month))" "$((10#$day))")"
+
           files=()
           for f in station_data_xyz.bin event_data.json; do
             if [ -f "$f" ]; then
@@ -35,14 +45,16 @@ jobs:
             exit 0
           fi
 
-          zip -j station_event_data.zip "${files[@]}"
+          tmp_zip="$(mktemp -u --suffix=.zip station-event-info.XXXXXXXX)"
+          zip -j "$tmp_zip" "${files[@]}"
+          mv -f "$tmp_zip" "station-event-info.${date_tag}.zip"
 
       - name: Create Release and Upload Asset
         uses: softprops/action-gh-release@v3.0.3
         with:
           name: "Release ${{ github.ref_name }}"
           files: |
-            station_event_data.zip
+            station-event-info.*.zip
           generate_release_notes: false
           body: ""
         env:

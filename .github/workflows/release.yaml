@@ -18,7 +18,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Package Data Files
+      - name: Package Files
         run: |
           files=()
           for f in station_data_xyz.bin event_data.json; do

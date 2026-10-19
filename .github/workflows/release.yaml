@@ -18,13 +18,31 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Package Data Files
+        run: |
+          files=()
+          for f in station_data_xyz.bin event_data.json; do
+            if [ -f "$f" ]; then
+              sha256sum "$f" > "$f.sha256"
+              files+=("$f" "$f.sha256")
+            else
+              echo "::warning::Skipping missing file: $f"
+            fi
+          done
+
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "::warning::No files to package, skipping zip creation."
+            exit 0
+          fi
+
+          zip -j station_event_data.zip "${files[@]}"
+
       - name: Create Release and Upload Asset
         uses: softprops/action-gh-release@v3.0.3
         with:
           name: "Release ${{ github.ref_name }}"
           files: |
-            *.bin
-            *.json
+            station_event_data.zip
           generate_release_notes: false
           body: ""
         env:

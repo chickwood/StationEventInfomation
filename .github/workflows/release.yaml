@@ -31,7 +31,7 @@ jobs:
           date_tag="$(printf '%04d%02d%02d' "$((10#$year))" "$((10#$month))" "$((10#$day))")"
 
           files=()
-          for f in station_data_xyz.bin event_data.json; do
+          for f in station_data_xyz.bin event_data.ndjson; do
             if [ -f "$f" ]; then
               files+=("$f")
             else
